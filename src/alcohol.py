@@ -2,11 +2,11 @@ import pyxel
 import config
 
 class Alcohol(config.GameConfig):
-    def __init__(self, x, y, al_type):
+    def __init__(self, x, y, vel, al_type):
         self.x = x
         self.y = y
+        self.vel = vel
         self.type = al_type
-        self.vel = al_type["vel"]
         self.w = al_type["width"]
         self.h = al_type["height"]
         self.points = al_type["points"]

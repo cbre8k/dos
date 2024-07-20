@@ -1,3 +1,4 @@
+import math
 import pyxel
 import random
 import config
@@ -28,18 +29,26 @@ class Game(config.GameConfig):
         self.alcohol_timer = 0
         self.poison_timer = 0
         self.game_over = False
+        self.game_pause = False
+        self.accumulate_vel = 1
+        self.accumulate_point = 1
         self.background_image_index = 0
     
     def update(self):
-        if not self.game_over:
+        if not self.game_over and not self.game_pause:
             self.basket.update()
             self.update_alcohols()
             self.update_poisons()
             self.check_collisions()
             self.update_background()
+            if pyxel.btnp(pyxel.KEY_P):
+                self.game_pause = True
         else:
             if pyxel.btnp(pyxel.KEY_R):
                 self.reset()
+            if self.game_pause and pyxel.btnp(pyxel.KEY_P):
+                self.game_pause = False
+                
     
     def update_alcohols(self):
         self.alcohol_timer += 1
@@ -47,7 +56,8 @@ class Game(config.GameConfig):
             self.alcohol_timer = 0
             al_type = random.choice(self.ALCOHOL_TYPES)
             al_start_x = random.randint(0, self.PLAYGROUND_WIDTH - al_type["width"])
-            new_alcohol = al.Alcohol(al_start_x, 0, al_type)
+            rand_vel = random.randint(self.background_image_index + 1, self.background_image_index + 3)
+            new_alcohol = al.Alcohol(al_start_x, 0, rand_vel * self.accumulate_vel, al_type)
             self.alcohols.append(new_alcohol)
         for alcohol in self.alcohols:
             alcohol.update()
@@ -58,7 +68,8 @@ class Game(config.GameConfig):
         if self.poison_timer > 100:
             self.poison_timer = 0
             p_start_x = random.randint(0, self.PLAYGROUND_WIDTH - 15)
-            new_poison = ps.Poison(p_start_x, 0, self.POISON_VEL)
+            rand_vel = random.randint(self.background_image_index + 1, self.background_image_index + 3)
+            new_poison = ps.Poison(p_start_x, 0, rand_vel * self.accumulate_vel)
             self.poisons.append(new_poison)
         for poison in self.poisons:
             poison.update()
@@ -87,7 +98,9 @@ class Game(config.GameConfig):
         for alcohol in self.alcohols[:]:
             if is_collision(alcohol.x, alcohol.y, alcohol.w, alcohol.h):
                 self.alcohols.remove(alcohol)
-                self.score += alcohol.points
+                self.score += math.floor(alcohol.points * self.accumulate_point)
+                self.accumulate_vel += 0.1
+                self.accumulate_point += 0.02
 
         # Check collisions with poisons
         for poison in self.poisons[:]:
@@ -110,9 +123,15 @@ class Game(config.GameConfig):
         for poison in self.poisons:
             poison.draw()
         pyxel.text(5, 5, f"Score: {self.score}", pyxel.COLOR_WHITE)
+        
         if self.game_over:
-            pyxel.text(self.PLAYGROUND_WIDTH // 2 - 40, self.PLAYGROUND_HEIGHT // 2, "GAME OVER", pyxel.COLOR_RED)
-            pyxel.text(self.PLAYGROUND_WIDTH // 2 - 50, self.PLAYGROUND_HEIGHT // 2 + 10, "Press R to Restart", pyxel.COLOR_RED)
+            pyxel.blt(self.PLAYGROUND_WIDTH // 4, self.PLAYGROUND_HEIGHT // 2 - 7, 0, 0, 64, 64, 14, 0)
+            pyxel.text(self.PLAYGROUND_WIDTH // 4 - 4, self.PLAYGROUND_HEIGHT // 2 + 10, "Press R to Restart", pyxel.COLOR_WHITE)
+
+        if self.game_pause:
+            pyxel.blt(self.PLAYGROUND_WIDTH // 4, self.PLAYGROUND_HEIGHT // 2 - 8, 0, 64, 64, 64, 16, 0)
+            pyxel.text(self.PLAYGROUND_WIDTH // 4 - 4, self.PLAYGROUND_HEIGHT // 2 + 10, "Press P to Resume", pyxel.COLOR_WHITE)
+
 
 if __name__ == "__main__":
     Game()
