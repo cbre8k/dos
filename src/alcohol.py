@@ -1,7 +1,7 @@
 import pyxel
-from config import GameConfig
+import config
 
-class Alcohol(GameConfig):
+class Alcohol(config.GameConfig):
     def __init__(self, x, y, al_type):
         self.x = x
         self.y = y

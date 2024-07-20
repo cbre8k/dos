@@ -1,13 +1,11 @@
 import pyxel
 import random
-from basket import Basket
-from poison import Poison
-from alcohol import Alcohol
-from config import GameConfig
+import config
+import basket as bk
+import poison as ps
+import alcohol as al
 
-
-
-class Game(GameConfig):
+class Game(config.GameConfig):
     def __init__(self):
         pyxel.init(
             self.DISPLAY_WIDTH, 
@@ -20,7 +18,7 @@ class Game(GameConfig):
     
     def reset(self):
         self.score = 0
-        self.basket = Basket(
+        self.basket = bk.Basket(
             self.PLAYGROUND_WIDTH // 2 - self.BASKET_WIDTH // 2, 
             self.PLAYGROUND_HEIGHT - self.BASKET_HEIGHT - 10, 
             self.BASKET_VEL
@@ -49,7 +47,7 @@ class Game(GameConfig):
             self.alcohol_timer = 0
             al_type = random.choice(self.ALCOHOL_TYPES)
             al_start_x = random.randint(0, self.PLAYGROUND_WIDTH - al_type["width"])
-            new_alcohol = Alcohol(al_start_x, 0, al_type)
+            new_alcohol = al.Alcohol(al_start_x, 0, al_type)
             self.alcohols.append(new_alcohol)
         for alcohol in self.alcohols:
             alcohol.update()
@@ -60,7 +58,7 @@ class Game(GameConfig):
         if self.poison_timer > 100:
             self.poison_timer = 0
             p_start_x = random.randint(0, self.PLAYGROUND_WIDTH - 15)
-            new_poison = Poison(p_start_x, 0, self.POISON_VEL)
+            new_poison = ps.Poison(p_start_x, 0, self.POISON_VEL)
             self.poisons.append(new_poison)
         for poison in self.poisons:
             poison.update()
@@ -79,11 +77,12 @@ class Game(GameConfig):
     
     def check_collisions(self):
         def is_collision(item_x, item_y, item_w, item_h):
+            # Check if the bottom of the item hits the top of the basket
             return (self.basket.x < item_x + item_w and
                     self.basket.x + self.BASKET_WIDTH > item_x and
-                    self.basket.y < item_y + item_h and
-                    self.basket.y + self.BASKET_HEIGHT > item_y)
-        
+                    item_y + item_h >= self.basket.y and
+                    item_y + item_h <= self.basket.y + self.BASKET_HEIGHT)
+
         # Check collisions with alcohols
         for alcohol in self.alcohols[:]:
             if is_collision(alcohol.x, alcohol.y, alcohol.w, alcohol.h):

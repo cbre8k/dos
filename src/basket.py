@@ -1,8 +1,8 @@
 import pyxel
-from config import GameConfig
+import config
 
 
-class Basket(GameConfig):
+class Basket(config.GameConfig):
     def __init__(self, x, y, vel):
         self.x = x
         self.y = y

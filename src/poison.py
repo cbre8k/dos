@@ -1,7 +1,7 @@
 import pyxel
-from config import GameConfig
+import config
 
-class Poison(GameConfig):
+class Poison(config.GameConfig):
     def __init__(self, x, y, vel):
         self.x = x
         self.y = y
