@@ -1,7 +1,6 @@
 import pyxel
 import config
 
-
 class Basket(config.GameConfig):
     def __init__(self, x, y, vel):
         self.x = x
