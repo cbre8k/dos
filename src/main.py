@@ -8,6 +8,7 @@ os.path.isfile("./poison.py")
 os.path.isfile("./basket.py")
 os.path.isfile("./config.py")
 os.path.isfile("./alcohol.py")
+os.path.isfile("../res/assets.pyxres")
 
 import menu
 import random
