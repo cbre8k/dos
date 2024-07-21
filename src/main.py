@@ -1,7 +1,15 @@
+import os
 import math
 import time
-import menu
 import pyxel
+
+os.path.isfile("./menu.py")
+os.path.isfile("./poison.py")
+os.path.isfile("./basket.py")
+os.path.isfile("./config.py")
+os.path.isfile("./alcohol.py")
+
+import menu
 import random
 import config
 import basket as bk

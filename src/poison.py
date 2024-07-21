@@ -1,6 +1,8 @@
 import pyxel
-import config
 
+import os
+os.path.isfile("./config.py")
+import config
 class Poison(config.GameConfig):
     def __init__(self, x, y, vel):
         self.x = x

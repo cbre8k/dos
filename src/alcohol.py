@@ -1,4 +1,7 @@
 import pyxel
+
+import os
+os.path.isfile("./config.py")
 import config
 
 class Alcohol(config.GameConfig):
