@@ -229,5 +229,4 @@ class Game(config.GameConfig):
             "Press P to Resume", pyxel.COLOR_WHITE
         )
 
-if __name__ == "__main__":
-    Game()
+Game()
