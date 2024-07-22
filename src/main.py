@@ -8,7 +8,7 @@ os.path.isfile("./poison.py")
 os.path.isfile("./basket.py")
 os.path.isfile("./config.py")
 os.path.isfile("./alcohol.py")
-os.path.isfile("../res/assets.pyxres")
+os.chdir(os.path.dirname(__file__))
 
 import menu
 import random
@@ -22,7 +22,7 @@ class Game(config.GameConfig):
         pyxel.init(
             self.DISPLAY_WIDTH, 
             self.DISPLAY_HEIGHT, 
-            title="Drunk Or Strip"
+            title="Drunk"
         )
         pyxel.load("../res/assets.pyxres")
         self.menu = menu.Menu(self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT)
