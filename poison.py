@@ -1,3 +1,4 @@
+open("config.py").close()
 import pyxel
 from config import GameConfig
 
