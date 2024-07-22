@@ -61,7 +61,7 @@ class Game(GameConfig):
             self.check_collisions()
             self.update_censored_grid()
             if pyxel.btnp(pyxel.KEY_P):
-                pyxel.play(0, 0)
+                pyxel.play(0, 1)
                 self.game_pause = True
             if pyxel.btnp(pyxel.KEY_M):
                 pyxel.play(0, 0)
@@ -69,10 +69,10 @@ class Game(GameConfig):
                 self.game_active = False
         else:
             if pyxel.btnp(pyxel.KEY_R) and not self.game_pause:
-                pyxel.play(0, 1)
+                pyxel.play(0, 0)
                 self.reset()
             if self.game_pause and pyxel.btnp(pyxel.KEY_P):
-                pyxel.play(0, 0)
+                pyxel.play(0, 2)
                 self.game_pause = False
 
     def update_items(self):
@@ -168,7 +168,7 @@ class Game(GameConfig):
 
         for poison in self.poisons[:]:
             if self.is_collision(poison.x, poison.y, self.POISON_WIDTH, self.POISON_HEIGHT):
-                pyxel.play(0, 2)
+                pyxel.play(0, 6)
                 self.poisons.remove(poison)
                 self.game_over = True
 
