@@ -3,7 +3,7 @@ import math
 import time
 import pyxel
 
-for module_path in ("menu.py", "config.py", "basket.py", "poison.py", "alcohol.py"):
+for module_path in ("menu.py", "config.py", "basket.py", "poison.py", "alcohol.py", "../res/dos.pyxres"):
     open(module_path).close()
 
 import menu
