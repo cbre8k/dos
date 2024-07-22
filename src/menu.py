@@ -1,10 +1,7 @@
 import pyxel
+from config import GameConfig
 
-import os
-os.path.isfile("./config.py")
-import config
-
-class Menu(config.GameConfig):
+class Menu(GameConfig):
     def __init__(self, width, height):
         self.width = width
         self.height = height

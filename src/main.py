@@ -1,39 +1,29 @@
-import os
+import pyxel
 import math
 import time
-import pyxel
-
-for module_path in ("menu.py", "config.py", "basket.py", "poison.py", "alcohol.py", "../res/dos.pyxres"):
-    open(module_path).close()
-
-import menu
 import random
-import config
-import basket as bk
-import poison as ps
-import alcohol as al
+from menu import Menu
+from basket import Basket
+from poison import Poison
+from alcohol import Alcohol
+from config import GameConfig
 
-class Game(config.GameConfig):
+class Game(GameConfig):
     def __init__(self):
         pyxel.init(
             self.DISPLAY_WIDTH, 
             self.DISPLAY_HEIGHT, 
             title="Drunk"
         )
-        
-        assets_path = os.path.abspath("../res/assets.pyxres")
-        print("Loading assets from:", assets_path)
-        
-        pyxel.load(assets_path)
-        
-        self.menu = menu.Menu(self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT)
+        pyxel.load("../res/assets.pyxres")
+        self.menu = Menu(self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT)
         self.game_active = False
         self.reset()
         pyxel.run(self.update, self.draw)
 
     def reset(self):
         self.score = 0
-        self.basket = bk.Basket(
+        self.basket = Basket(
             self.PLAYGROUND_WIDTH // 2 - self.BASKET_WIDTH // 2, 
             self.PLAYGROUND_HEIGHT - self.BASKET_HEIGHT - 10, 
             self.BASKET_VEL
@@ -113,7 +103,7 @@ class Game(config.GameConfig):
         rand_vel = random.randint(
             self.background_image_index + 1, self.background_image_index + 3
         )
-        new_alcohol = al.Alcohol(
+        new_alcohol = Alcohol(
             al_start_x, 0, rand_vel * self.accumulate_vel, al_type
         )
         self.alcohols.append(new_alcohol)
@@ -123,7 +113,7 @@ class Game(config.GameConfig):
         rand_vel = random.randint(
             self.background_image_index + 1, self.background_image_index + 3
         )
-        new_poison = ps.Poison(p_start_x, 0, rand_vel * self.accumulate_vel)
+        new_poison = Poison(p_start_x, 0, rand_vel * self.accumulate_vel)
         self.poisons.append(new_poison)
 
     def update_censored_grid(self):

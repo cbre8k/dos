@@ -1,10 +1,7 @@
 import pyxel
+from config import GameConfig
 
-import os
-os.path.isfile("./config.py")
-import config
-
-class Basket(config.GameConfig):
+class Basket(GameConfig):
     def __init__(self, x, y, vel):
         self.x = x
         self.y = y
