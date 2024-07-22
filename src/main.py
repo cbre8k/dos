@@ -20,7 +20,12 @@ class Game(config.GameConfig):
             self.DISPLAY_HEIGHT, 
             title="Drunk"
         )
-        pyxel.load("../res/dos.pyxres")
+        
+        assets_path = os.path.abspath("../res/assets.pyxres")
+        print("Loading assets from:", assets_path)
+        
+        pyxel.load(assets_path)
+        
         self.menu = menu.Menu(self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT)
         self.game_active = False
         self.reset()
