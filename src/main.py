@@ -3,12 +3,8 @@ import math
 import time
 import pyxel
 
-os.path.isfile("./menu.py")
-os.path.isfile("./poison.py")
-os.path.isfile("./basket.py")
-os.path.isfile("./config.py")
-os.path.isfile("./alcohol.py")
-os.chdir(os.path.dirname(__file__))
+for module_path in ("menu.py", "config.py", "basket.py", "poison.py", "alcohol.py"):
+    open(module_path).close()
 
 import menu
 import random
@@ -24,7 +20,7 @@ class Game(config.GameConfig):
             self.DISPLAY_HEIGHT, 
             title="Drunk"
         )
-        pyxel.load("../res/assets.pyxres")
+        pyxel.load("../res/dos.pyxres")
         self.menu = menu.Menu(self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT)
         self.game_active = False
         self.reset()
