@@ -15,7 +15,7 @@ class Game(GameConfig):
             self.DISPLAY_HEIGHT, 
             title="Drunk"
         )
-        pyxel.load("../res/assets.pyxres")
+        pyxel.load("../res/dos.pyxres")
         self.menu = Menu(self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT)
         self.game_active = False
         self.reset()
