@@ -1,7 +1,11 @@
+for module_path in ("menu.py", "basket.py", "poison.py", "alcohol.py", "config.py"):
+    open(module_path).close()
+
 import pyxel
 import math
 import time
 import random
+
 from menu import Menu
 from basket import Basket
 from poison import Poison
