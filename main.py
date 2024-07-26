@@ -1,4 +1,4 @@
-for module_path in ("basket.py", "poison.py", "alcohol.py", "config.py"):
+for module_path in ("basket.py", "poison.py", "alcohol.py", "config.py", "utils.py"):
     open(module_path).close()
 
 import pyxel
@@ -10,6 +10,13 @@ from basket import Basket
 from poison import Poison
 from alcohol import Alcohol
 from config import GameConfig
+from utils import (
+    play_sound,
+    check_collision,
+    unlock_random_square,
+    is_grid_fully_unlocked,
+    change_background
+)
 
 class Game(GameConfig):
     def __init__(self):
@@ -35,7 +42,6 @@ class Game(GameConfig):
         self.poison_timer = 0
         self.game_over = False
         self.game_pause = False
-        self.accumulate_vel = 1
         self.accumulate_point = 1
         self.background_image_index = 0
         self.censored_grid = [
@@ -53,16 +59,16 @@ class Game(GameConfig):
             self.check_collisions()
             self.update_censored_grid()
             if pyxel.btnp(pyxel.KEY_P) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-                pyxel.play(0, 1)
+                play_sound(1)
                 self.game_pause = True
         else:
             if (pyxel.btnp(pyxel.KEY_R) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) and not self.game_pause:
-                pyxel.play(0, 0)
+                play_sound(0)
                 self.reset()
             if self.game_pause and (pyxel.btnp(pyxel.KEY_P) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A)):
-                pyxel.play(0, 2)
+                play_sound(2)
                 self.game_pause = False
-                
+
     def update_basket(self):
         if (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)) and self.basket.x > 0:
             self.basket.x -= self.basket.vel
@@ -73,11 +79,11 @@ class Game(GameConfig):
         self.alcohol_timer += 1
         self.poison_timer += 1
 
-        if self.alcohol_timer > self.ALCOHOL_SPAWN_RATE:
+        if self.alcohol_timer > (self.ALCOHOL_SPAWN_RATE - 10 * self.ACCUMULATE_POINT_INCREMENT):
             self.alcohol_timer = 0
             self.spawn_alcohol()
 
-        if self.poison_timer > self.POISON_SPAWN_RATE:
+        if self.poison_timer > (self.POISON_SPAWN_RATE - 10 * self.ACCUMULATE_POINT_INCREMENT):
             self.poison_timer = 0
             self.spawn_poison()
 
@@ -102,7 +108,7 @@ class Game(GameConfig):
             self.background_image_index + 1, self.background_image_index + 3
         )
         new_alcohol = Alcohol(
-            al_start_x, 0, rand_vel * self.accumulate_vel, al_type
+            al_start_x, 0, rand_vel * self.accumulate_point, al_type
         )
         self.alcohols.append(new_alcohol)
 
@@ -111,68 +117,38 @@ class Game(GameConfig):
         rand_vel = random.randint(
             self.background_image_index + 1, self.background_image_index + 3
         )
-        new_poison = Poison(p_start_x, 0, rand_vel * self.accumulate_vel)
+        new_poison = Poison(p_start_x, 0, rand_vel * self.accumulate_point)
         self.poisons.append(new_poison)
 
     def update_censored_grid(self):
         while self.score >= self.points_until_next_unlock:
             self.points_until_next_unlock += self.POINTS_PER_SQUARE
-            self.unlock_random_square()
+            unlock_random_square(self.censored_grid)
 
-        if self.is_grid_fully_unlocked() and not self.full_unlock_awarded:
-            pyxel.play(0, 4)
+        if is_grid_fully_unlocked(self.censored_grid) and not self.full_unlock_awarded:
+            play_sound(4)
             self.full_unlock_awarded = True
             self.score += self.BIG_POINT_BONUS
             self.full_unlock_time = time.time()
 
-        if self.full_unlock_awarded and time.time() - self.full_unlock_time >= self.BACKGROUND_DURATION and not self.background_image_index == len(self.BACKGROUND_LEVEL):
-            pyxel.play(0, 5)
-            self.change_background()
-
-    def unlock_random_square(self):
-        locked_squares = [
-            (i, j) for i in range(len(self.censored_grid)) 
-            for j in range(len(self.censored_grid[0])) 
-            if self.censored_grid[i][j]
-        ]
-        if locked_squares:
-            i, j = random.choice(locked_squares)
-            self.censored_grid[i][j] = False
-
-    def is_grid_fully_unlocked(self):
-        return all(not cell for row in self.censored_grid for cell in row)
-
-    def change_background(self):
-        if self.background_image_index < len(self.BACKGROUND_LEVEL) - 1:
-            self.background_image_index += 1
-            self.censored_grid = [
-                [True for _ in range(self.DISPLAY_WIDTH // self.SQUARE_SIZE)]
-                for _ in range(self.DISPLAY_HEIGHT // self.SQUARE_SIZE)
-            ]
-            self.full_unlock_awarded = False
+        if self.full_unlock_awarded and time.time() - self.full_unlock_time >= self.BACKGROUND_DURATION:
+            play_sound(5)
+            change_background(self, self.BACKGROUND_WIDTH, self.BACKGROUND_HEIGHT, self.SQUARE_SIZE)
 
     def check_collisions(self):
         for alcohol in self.alcohols[:]:
-            if self.is_collision(alcohol.x, alcohol.y, alcohol.w, alcohol.h):
-                pyxel.play(0, 3)
+            if check_collision(self.basket, alcohol.x, alcohol.y, alcohol.w, alcohol.h, self.BASKET_WIDTH, self.BASKET_HEIGHT):
+                play_sound(3)
                 self.alcohols.remove(alcohol)
                 self.score += math.floor(alcohol.points * self.accumulate_point)
-                self.accumulate_vel += self.ACCUMULATE_VEL_INCREMENT
+                self.accumulate_point += self.ACCUMULATE_POINT_INCREMENT
                 self.accumulate_point += self.ACCUMULATE_POINT_INCREMENT
 
         for poison in self.poisons[:]:
-            if self.is_collision(poison.x, poison.y, self.POISON_WIDTH, self.POISON_HEIGHT):
-                pyxel.play(0, 6)
+            if check_collision(self.basket, poison.x, poison.y, self.POISON_WIDTH, self.POISON_HEIGHT, self.BASKET_WIDTH, self.BASKET_HEIGHT):
+                play_sound(6)
                 self.poisons.remove(poison)
                 self.game_over = True
-
-    def is_collision(self, item_x, item_y, item_w, item_h):
-        return (
-            self.basket.x < item_x + item_w and
-            self.basket.x + self.BASKET_WIDTH > item_x and
-            item_y + item_h >= self.basket.y and
-            item_y + item_h <= self.basket.y + self.BASKET_HEIGHT
-        )
 
     def draw(self):
         pyxel.cls(0)
@@ -198,11 +174,10 @@ class Game(GameConfig):
         for i, row in enumerate(self.censored_grid):
             for j, is_censored in enumerate(row):
                 if is_censored:
-                    color = random.randint(0, 7)
                     pyxel.rect(
                         self.BACKGROUND_WIDTH + j * self.SQUARE_SIZE, 
                         i * self.SQUARE_SIZE, self.SQUARE_SIZE, self.SQUARE_SIZE, 
-                        color
+                        pyxel.COLOR_BLACK
                     )
 
     def draw_game_over(self):

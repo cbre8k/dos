@@ -10,14 +10,13 @@ class GameConfig:
     
     BACKGROUND_DURATION = 10
     
-    ALCOHOL_SPAWN_RATE = 30
-    POISON_SPAWN_RATE = 100
+    ALCOHOL_SPAWN_RATE = 25
+    POISON_SPAWN_RATE = 80
     
-    ACCUMULATE_VEL_INCREMENT = 0.002
-    ACCUMULATE_POINT_INCREMENT = 0.003
+    ACCUMULATE_POINT_INCREMENT = 0.005
     
     SQUARE_SIZE = 16
-    POINTS_PER_SQUARE = 10
+    POINTS_PER_SQUARE = 3
     BIG_POINT_BONUS = 50
     
     BASKET_WIDTH = 32
@@ -28,11 +27,11 @@ class GameConfig:
     POISON_HEIGHT = 32
     
     ALCOHOL_TYPES = [
-        {"image": (0, 0, 0), "points": 1, "height": 32, "width": 10}, 
-        {"image": (0, 16, 0), "points": 2, "height": 32, "width": 32},
-        {"image": (0, 48, 2), "points": 3, "height": 30, "width": 14},
-        {"image": (0, 64, 0), "points": 4, "height": 32, "width": 11},
-        {"image": (0, 78, 4), "points": 5, "height": 28, "width": 11},
+        {"image": (0, 0, 0), "points": 2, "height": 32, "width": 10}, 
+        {"image": (0, 16, 0), "points": 3, "height": 32, "width": 32},
+        {"image": (0, 48, 2), "points": 4, "height": 30, "width": 14},
+        {"image": (0, 64, 0), "points": 5, "height": 32, "width": 11},
+        {"image": (0, 78, 4), "points": 6, "height": 28, "width": 11},
     ]
     
     BACKGROUND_LEVEL = [
