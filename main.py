@@ -192,10 +192,11 @@ class Game(GameConfig):
         for i, row in enumerate(self.censored_grid):
             for j, is_censored in enumerate(row):
                 if is_censored:
+                    color = random.randint(0, 7)
                     pyxel.rect(
                         self.BACKGROUND_WIDTH + j * self.SQUARE_SIZE, 
                         i * self.SQUARE_SIZE, self.SQUARE_SIZE, self.SQUARE_SIZE, 
-                        pyxel.COLOR_BLACK
+                        color
                     )
 
     def draw_game_over(self):
