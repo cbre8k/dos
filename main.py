@@ -52,14 +52,14 @@ class Game(GameConfig):
             self.update_items()
             self.check_collisions()
             self.update_censored_grid()
-            if pyxel.btnp(pyxel.KEY_P):
+            if pyxel.btnp(pyxel.KEY_P) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 pyxel.play(0, 1)
                 self.game_pause = True
         else:
-            if pyxel.btnp(pyxel.KEY_R) and not self.game_pause:
+            if (pyxel.btnp(pyxel.KEY_R) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) and not self.game_pause:
                 pyxel.play(0, 0)
                 self.reset()
-            if self.game_pause and pyxel.btnp(pyxel.KEY_P):
+            if self.game_pause and (pyxel.btnp(pyxel.KEY_P) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A)):
                 pyxel.play(0, 2)
                 self.game_pause = False
 
