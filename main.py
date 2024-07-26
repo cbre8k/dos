@@ -6,7 +6,6 @@ import math
 import time
 import random
 
-from menu import Menu
 from basket import Basket
 from poison import Poison
 from alcohol import Alcohol
@@ -20,8 +19,6 @@ class Game(GameConfig):
             title="Dos"
         )
         pyxel.load("res/dos.pyxres")
-        self.menu = Menu(self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT)
-        self.game_active = False
         self.reset()
         pyxel.run(self.update, self.draw)
 
@@ -50,12 +47,7 @@ class Game(GameConfig):
         self.full_unlock_awarded = False
 
     def update(self):
-        if self.menu.active:
-            self.menu.update()
-            if not self.menu.active:
-                self.game_active = True
-                self.reset()
-        elif not self.game_over and not self.game_pause:
+        if not self.game_over and not self.game_pause:
             self.basket.update()
             self.update_items()
             self.check_collisions()
@@ -63,10 +55,6 @@ class Game(GameConfig):
             if pyxel.btnp(pyxel.KEY_P):
                 pyxel.play(0, 1)
                 self.game_pause = True
-            if pyxel.btnp(pyxel.KEY_M):
-                pyxel.play(0, 0)
-                self.menu.active = True
-                self.game_active = False
         else:
             if pyxel.btnp(pyxel.KEY_R) and not self.game_pause:
                 pyxel.play(0, 0)
@@ -181,22 +169,19 @@ class Game(GameConfig):
         )
 
     def draw(self):
-        if not self.game_active:
-            self.menu.draw()
-        else:
-            pyxel.cls(0)
-            pyxel.blt(0, 0, 0, 128, 0, self.PLAYGROUND_WIDTH, self.PLAYGROUND_HEIGHT, 0)
-            self.draw_censored_background()
-            self.basket.draw()
-            for alcohol in self.alcohols:
-                alcohol.draw()
-            for poison in self.poisons:
-                poison.draw()
-            pyxel.text(5, 5, f"Score: {self.score}", pyxel.COLOR_WHITE)
-            if self.game_over:
-                self.draw_game_over()
-            if self.game_pause:
-                self.draw_game_pause()
+        pyxel.cls(0)
+        pyxel.blt(0, 0, 0, 128, 0, self.PLAYGROUND_WIDTH, self.PLAYGROUND_HEIGHT, 0)
+        self.draw_censored_background()
+        self.basket.draw()
+        for alcohol in self.alcohols:
+            alcohol.draw()
+        for poison in self.poisons:
+            poison.draw()
+        pyxel.text(5, 5, f"Score: {self.score}", pyxel.COLOR_WHITE)
+        if self.game_over:
+            self.draw_game_over()
+        if self.game_pause:
+            self.draw_game_pause()
 
     def draw_censored_background(self):
         img_bank, u, v = self.BACKGROUND_LEVEL[self.background_image_index]["image"]
