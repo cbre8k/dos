@@ -48,7 +48,7 @@ class Game(GameConfig):
 
     def update(self):
         if not self.game_over and not self.game_pause:
-            self.basket.update()
+            self.update_basket()
             self.update_items()
             self.check_collisions()
             self.update_censored_grid()
@@ -62,6 +62,12 @@ class Game(GameConfig):
             if self.game_pause and (pyxel.btnp(pyxel.KEY_P) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A)):
                 pyxel.play(0, 2)
                 self.game_pause = False
+                
+    def update_basket(self):
+        if (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)) and self.basket.x > 0:
+            self.basket.x -= self.basket.vel
+        if (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT)) and self.basket.x < self.PLAYGROUND_WIDTH - self.BASKET_HEIGHT:
+            self.basket.x += self.basket.vel
 
     def update_items(self):
         self.alcohol_timer += 1

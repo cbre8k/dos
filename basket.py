@@ -8,11 +8,11 @@ class Basket(GameConfig):
         self.y = y
         self.vel = vel
 
-    def update(self):
-        if (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_X)) and self.x > 0:
-            self.x -= self.vel
-        if (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_Y)) and self.x < self.PLAYGROUND_WIDTH - self.BASKET_HEIGHT:
-            self.x += self.vel
+    # def update(self):
+    #     if (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)) and self.x > 0:
+    #         self.x -= self.vel
+    #     if (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT)) and self.x < self.PLAYGROUND_WIDTH - self.BASKET_HEIGHT:
+    #         self.x += self.vel
 
     def draw(self):
         pyxel.blt(self.x, self.y, 0, 0, 33, self.BASKET_WIDTH, self.BASKET_HEIGHT, 0)
