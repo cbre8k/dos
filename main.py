@@ -1,4 +1,4 @@
-for module_path in ("menu.py", "basket.py", "poison.py", "alcohol.py", "config.py"):
+for module_path in ("basket.py", "poison.py", "alcohol.py", "config.py"):
     open(module_path).close()
 
 import pyxel
